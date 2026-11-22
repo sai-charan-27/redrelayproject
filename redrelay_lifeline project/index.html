@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>RedRelay | LifeLine</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+
+<body>
+    <header>
+        <div class="brand"><span class="logo">✚</span>
+            <div>
+                <h1>RedRelay</h1><small>LifeLine • Blood coordination demo</small>
+            </div>
+        </div>
+        <nav><button data-view="dashboard" class="active">Dashboard</button><button data-view="requests">Emergency
+                Feed</button><button data-view="donors">Donor Registry</button><button data-view="create">Create
+                SOS</button><button data-view="tracker">Donation Tracker</button><button
+                data-view="admin">Admin</button></nav>
+    </header>
+    <main>
+        <section class="hero">
+            <div>
+                <p class="eyebrow">COMMUNITY • CARE • COORDINATION</p>
+                <h2>Every connection<br>can make a difference.</h2>
+                <p>Coordinate emergency requests and volunteer donor responses in one place.</p><button class="primary"
+                    data-view="create">Create emergency SOS</button>
+            </div>
+            <div class="hero-stat"><span>Demo status</span><strong>LIVE UI</strong><small>Local browser
+                    prototype</small></div>
+        </section>
+        <section id="dashboard" class="view">
+            <div class="metrics" id="metrics"></div>
+            <div class="two">
+                <article class="panel">
+                    <div class="panelhead">
+                        <h3>Urgent requests</h3><button class="small" data-view="requests">View feed</button>
+                    </div>
+                    <div id="dashRequests"></div>
+                </article>
+                <article class="panel">
+                    <h3>How the workflow works</h3>
+                    <div class="steps">
+                        <div><b>1</b><span>Create SOS<br><small>Enter request details</small></span></div>
+                        <div><b>2</b><span>Broadcast<br><small>Filter compatible demo donors</small></span></div>
+                        <div><b>3</b><span>Response<br><small>Volunteer response recorded</small></span></div>
+                        <div><b>4</b><span>Close request<br><small>Hospital confirms status</small></span></div>
+                    </div>
+                </article>
+            </div>
+            <article class="panel">
+                <h3>Local coordination map</h3>
+                <p class="muted">Demo locations only. Not live tracking.</p>
+                <div id="map"></div>
+            </article>
+        </section>
+        <section id="requests" class="view hidden">
+            <div class="panel">
+                <div class="panelhead">
+                    <h2>Emergency feed</h2><button class="primary" data-view="create">+ New SOS</button>
+                </div>
+                <div class="filters"><input id="requestSearch" placeholder="Search hospital / locality"><select
+                        id="requestBlood">
+                        <option value="">All blood groups</option>
+                        <option>A+</option>
+                        <option>A-</option>
+                        <option>B+</option>
+                        <option>B-</option>
+                        <option>AB+</option>
+                        <option>AB-</option>
+                        <option>O+</option>
+                        <option>O-</option>
+                    </select><select id="requestUrgency">
+                        <option value="">All urgencies</option>
+                        <option>Critical</option>
+                        <option>High</option>
+                        <option>Normal</option>
+                    </select></div>
+                <div id="requestList"></div>
+            </div>
+        </section>
+        <section id="donors" class="view hidden">
+            <div class="panel">
+                <div class="panelhead">
+                    <h2>Donor registry</h2><button class="primary" id="showDonorForm">+ Register donor</button>
+                </div>
+                <div class="filters"><input id="donorSearch" placeholder="Search locality"><select id="donorBlood">
+                        <option value="">All blood groups</option>
+                        <option>A+</option>
+                        <option>A-</option>
+                        <option>B+</option>
+                        <option>B-</option>
+                        <option>AB+</option>
+                        <option>AB-</option>
+                        <option>O+</option>
+                        <option>O-</option>
+                    </select></div>
+                <div id="donorList"></div>
+            </div>
+            <div class="panel hidden" id="donorFormPanel">
+                <h3>Volunteer registration</h3>
+                <form id="donorForm" class="formgrid"><label>Name<input required name="name"></label><label>Blood
+                        group<select required name="blood">
+                            <option value="">Select</option>
+                            <option>A+</option>
+                            <option>A-</option>
+                            <option>B+</option>
+                            <option>B-</option>
+                            <option>AB+</option>
+                            <option>AB-</option>
+                            <option>O+</option>
+                            <option>O-</option>
+                        </select></label><label>Locality<input required name="area"></label><label>Phone (private)<input
+                            required name="phone" type="tel"></label><label>Last donation date (optional)<input
+                            name="lastDonation" type="date"></label><label><span>Availability</span><select
+                            name="available">
+                            <option value="true">Available</option>
+                            <option value="false">Unavailable</option>
+                        </select></label><button class="primary">Save donor</button></form>
+            </div>
+        </section>
+        <section id="create" class="view hidden">
+            <div class="panel">
+                <h2>Create emergency SOS</h2>
+                <p class="muted">Use fictional information for this demonstration.</p>
+                <form id="sosForm" class="formgrid"><label>Patient name<input required
+                            name="patient"></label><label>Hospital<input required
+                            name="hospital"></label><label>Hospital locality<input required
+                            name="area"></label><label>Blood group<select required name="blood">
+                            <option value="">Select</option>
+                            <option>A+</option>
+                            <option>A-</option>
+                            <option>B+</option>
+                            <option>B-</option>
+                            <option>AB+</option>
+                            <option>AB-</option>
+                            <option>O+</option>
+                            <option>O-</option>
+                        </select></label><label>Units needed<input required type="number" min="1" max="20"
+                            name="units"></label><label>Urgency<select name="urgency">
+                            <option>Critical</option>
+                            <option>High</option>
+                            <option>Normal</option>
+                        </select></label><label>Required by<input required type="datetime-local"
+                            name="deadline"></label><label>Doctor/hospital verification contact<input required
+                            name="verification"></label><label class="wide">Additional note<textarea name="note"
+                            rows="3"></textarea></label><button class="primary">Create SOS & broadcast demo</button>
+                </form>
+            </div>
+        </section>
+        <section id="tracker" class="view hidden">
+            <div class="panel">
+                <h2>Donation interval tracker</h2>
+                <p class="muted">This is a reminder tool only—not a medical eligibility determination. Follow your
+                    clinician or blood bank's guidance.</p>
+                <form id="donationForm" class="formgrid"><label>Donor<select id="donationDonor"
+                            required></select></label><label>Confirmed donation date<input type="date" name="date"
+                            required></label><button class="primary">Record donation</button></form>
+                <div id="donationList"></div>
+            </div>
+        </section>
+        <section id="admin" class="view hidden">
+            <div class="panel">
+                <h2>Admin overview</h2>
+                <p class="muted">Local demo controls. No account or server authentication is configured.</p>
+                <div id="adminStats"></div>
+                <div id="adminList"></div><button class="danger" id="resetDemo">Reset demo data</button>
+            </div>
+        </section>
+    </main>
+    <footer>RedRelay prototype • No real SMS, medical verification, or live donor dispatch • <span
+            id="footCount"></span></footer>
+    <dialog id="modal">
+        <div id="modalContent"></div><button class="small" id="closeModal">Close</button>
+    </dialog>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
